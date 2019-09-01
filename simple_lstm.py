@@ -34,6 +34,10 @@ dtype = torch.float
 # Generate data
 #####################
 data = ARData(num_datapoints, num_prev=input_size, test_size=test_size, noise_var=noise_var, coeffs=fixed_ar_coefficients[input_size])
+print(data.X_train.shape)
+print(data.y_train.shape)
+print(data.X_test.shape)
+print(data.y_test.shape)
 
 # make training and test sets in torch
 X_train = torch.from_numpy(data.X_train).type(torch.Tensor)
@@ -71,15 +75,25 @@ class LSTM(nn.Module):
         # shape of self.hidden: (a, b), where a and b both 
         # have shape (num_layers, batch_size, hidden_dim).
         lstm_out, self.hidden = self.lstm(input.view(len(input), self.batch_size, -1))
-        
+
+        #print(lstm_out[-1].view(self.batch_size, -1))
         # Only take the output from the final timetep
         # Can pass on the entirety of lstm_out to the next layer if it is a seq2seq prediction
         y_pred = self.linear(lstm_out[-1].view(self.batch_size, -1))
         return y_pred.view(-1)
 
-
-
+'''
+lstm_input_size=20
+h1 = 32
+output_dim = 1
+num_layers = 2
+learning_rate = 1e-3
+num_epochs = 200
+num_train = 400
+batch_size = 400
+'''
 model = LSTM(lstm_input_size, h1, batch_size=num_train, output_dim=output_dim, num_layers=num_layers)
+print(model)
 
 loss_fn = torch.nn.MSELoss(size_average=False)
 

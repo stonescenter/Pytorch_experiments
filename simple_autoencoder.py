@@ -29,7 +29,9 @@ img_transform = transforms.Compose([
     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
 ])
 
-dataset = MNIST('./data', transform=img_transform)
+#dataset = MNIST('~/steve/data', transform=img_transform, download=True)
+dataset = MNIST('~/steve/data', transform=img_transform)
+
 dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
 
 
@@ -63,7 +65,7 @@ optimizer = torch.optim.Adam(
 for epoch in range(num_epochs):
     for data in dataloader:
         img, _ = data
-        img = img.view(img.size(0), -1)
+        img = img.view(img.size(0), -1) 
         img = Variable(img).cuda()
         # ===================forward=====================
         output = model(img)
